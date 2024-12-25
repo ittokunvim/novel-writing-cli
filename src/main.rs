@@ -7,9 +7,25 @@ use std::io::{
 use std::thread::sleep;
 use std::time::Duration;
 
+use serde::Deserialize;
+
+const PATH_JSON: &str = "data.json";
 const DURATION_MILLIS: u64 = 50;
 
+#[derive(Deserialize, Debug)]
+struct Novel {
+    title: String,
+    path: String,
+}
+
 fn main() {
+    // read json
+    let novels = read_novel_json();
+    for novel in &novels {
+        println!("title: {}", novel.title);
+        println!("path: {}", novel.path);
+    }
+    // read file
     let mut f = File::open("novels/01.txt").expect("404");
     let mut contents = String::new();
     // read file
@@ -25,6 +41,12 @@ fn main() {
         }
         print!("\n");
     }
+}
+
+fn read_novel_json() -> Vec<Novel> {
+    let json = std::fs::read_to_string(PATH_JSON).expect("JSON read failed");
+
+    serde_json::from_str(&json).expect("JSON parse failed")
 }
 
 fn read_input() {
