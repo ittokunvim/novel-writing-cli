@@ -7,6 +7,7 @@ use std::io::{
 use std::thread::sleep;
 use std::time::Duration;
 
+use dialoguer::{theme::ColorfulTheme, Select};
 use serde::Deserialize;
 
 const PATH_JSON: &str = "data.json";
@@ -19,18 +20,16 @@ struct Novel {
 }
 
 fn main() {
+    println!("┌────────────────────────────┐");
+    println!("│ program: novel writing cli │");
+    println!("│ author: ittokunvim         │");
+    println!("└────────────────────────────┘");
     // read json
     let novels = read_novel_json();
-    for novel in &novels {
-        println!("title: {}", novel.title);
-        println!("path: {}", novel.path);
-    }
+    // select novel
+    let filename = select_novel(novels);
     // read file
-    let mut f = File::open("novels/01.txt").expect("404");
-    let mut contents = String::new();
-    // read file
-    f.read_to_string(&mut contents)
-        .expect("something went wrong reading the file");
+    let contents = read_file(filename);
     // loop text lines
     for (_, line) in contents.lines().enumerate() {
         // pause when line is empty
@@ -47,6 +46,28 @@ fn read_novel_json() -> Vec<Novel> {
     let json = std::fs::read_to_string(PATH_JSON).expect("JSON read failed");
 
     serde_json::from_str(&json).expect("JSON parse failed")
+}
+
+fn select_novel(novels: Vec<Novel>) -> String {
+    let selections: Vec<String> = novels.iter().map(|novel| novel.title.clone()).collect();
+    let selection = Select::with_theme(&ColorfulTheme::default())
+        .with_prompt("Select a novel")
+        .default(0)
+        .items(&selections[..])
+        .interact()
+        .unwrap();
+
+    novels[selection].path.clone()
+}
+
+fn read_file(filename: String) -> String {
+    let mut f = File::open(filename).expect("404");
+    let mut contents = String::new();
+
+    f.read_to_string(&mut contents)
+        .expect("something went wrong reading the file");
+ 
+    contents
 }
 
 fn read_input() {
