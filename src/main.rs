@@ -8,6 +8,7 @@ use std::thread::sleep;
 use std::time::Duration;
 
 use dialoguer::{theme::ColorfulTheme, Select};
+use console::Term;
 use serde::Deserialize;
 
 const PATH_JSON: &str = "data.json";
@@ -20,14 +21,13 @@ struct Novel {
 }
 
 fn main() {
-    println!("┌────────────────────────────┐");
-    println!("│ program: novel writing cli │");
-    println!("│ author: ittokunvim         │");
-    println!("└────────────────────────────┘");
+    clear_screen();
+    introduction();
     // read json
     let novels = read_novel_json();
     // select novel
     let filename = select_novel(novels);
+    clear_screen();
     // read file
     let contents = read_file(filename);
     // loop text lines
@@ -40,6 +40,13 @@ fn main() {
         }
         print!("\n");
     }
+}
+
+fn introduction() {
+    println!("┌────────────────────────────┐");
+    println!("│ program: novel writing cli │");
+    println!("│ author: ittokunvim         │");
+    println!("└────────────────────────────┘");
 }
 
 fn read_novel_json() -> Vec<Novel> {
@@ -82,4 +89,10 @@ fn write_char(c: char) {
     print!("{c}");
     stdout().flush().expect("flush to failed");
     sleep(Duration::from_millis(DURATION_MILLIS));
+}
+
+fn clear_screen() {
+    let term = Term::stdout();
+
+    term.clear_screen().expect("clear screen failed");
 }
