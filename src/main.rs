@@ -10,7 +10,7 @@ use std::time::Duration;
 const DURATION_MILLIS: u64 = 50;
 
 fn main() {
-    let mut f = File::open("novel.txt").expect("404");
+    let mut f = File::open("novels/01.txt").expect("404");
     let mut contents = String::new();
     // read file
     f.read_to_string(&mut contents)
