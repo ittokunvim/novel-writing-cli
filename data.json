@@ -1,0 +1,18 @@
+[
+	{
+		"title": "吾輩は猫である",
+		"path": "novels/01.txt"
+	},
+	{
+		"title": "人間失格",
+		"path": "novels/02.txt"
+	},
+	{
+		"title": "高瀬舟",
+		"path": "novels/03.txt"
+	},
+	{
+		"title": "賢者の贈り物",
+		"path": "novels/04.txt"
+	}
+]
